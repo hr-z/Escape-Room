@@ -1,0 +1,482 @@
+PImage wall;
+PImage tv;
+PImage boatb;
+PImage boatf;
+PImage drawer;
+PImage earth;
+PImage box;
+PImage boxopen;
+PImage keykey;
+PImage diamond;
+int f = 0;
+int t = 0;
+float starX = random(width);
+float starY = random(height);
+float time = 0;
+float rectX = 0;
+float moveX = 2;
+float rectY = 320;
+boolean isPressed = false;
+boolean boat = true;
+boolean tv_on = false;
+float cx;
+float cy;
+float sx;
+float sy;
+float zx;
+float zy;
+float ox;
+float oy;
+float letter = 0;
+boolean draw = false;
+boolean back = false;
+boolean show_c = false;
+boolean show_s = false;
+boolean show_2 = false;
+boolean show_0 = false;
+float earth_r = 0;
+boolean box_open = false;
+float annoy = 0;
+boolean c_true = false;
+boolean s_true = false;
+boolean z_true = false;
+boolean nowayback = false;
+void setup() {
+  size(900, 600);
+  wall = loadImage("background.png");
+  wall.resize(900, 600);
+  tv = loadImage("tv.png");
+  tv.resize(900, 600);
+  boatf = loadImage("boat1.png");
+  boatf.resize(210, 60);
+  boatb = loadImage("boat.png");
+  boatb.resize(210, 60);
+  drawer = loadImage("drawer.png");
+  drawer.resize(900, 600);
+  earth = loadImage("earth.png");
+  earth.resize(900, 600);
+  box = loadImage("box.png");
+  boxopen = loadImage("boxopen.png");
+  keykey = loadImage("key.png");
+  keykey.resize(100, 100);
+  diamond = loadImage("diamond.png");
+  diamond.resize(100, 100);
+  cx = random(190, 580);
+  cy =  random(150, 440);
+  sx = random(190, 580);
+  sy =  random(150, 440);
+  zx = random(190, 580);
+  zy =  random(150, 440);
+  ox = random(190, 580);
+  oy =  random(150, 440);
+}
+
+void draw() {
+  background(0);
+  // Clickable boat
+  if (dist(rectX, rectY, mouseX, mouseY) < 80) {
+    if (boat == true) {
+      cursor(HAND);
+
+      if (mousePressed) {
+
+        isPressed = true;
+      } else {
+        strokeWeight(5);
+      }
+      stroke(255);
+    }
+  } else {
+    noStroke();
+    cursor(ARROW);
+  }
+
+  // Start button
+  fill(#44987F);
+  textSize(32);
+  text("START", rectX-50, rectY-20);
+  noFill();
+  rectMode(CENTER);
+  rect(rectX, rectY, boatf.width, boatf.height+50);
+
+  //boat turns around once it hits the edge
+  imageMode(CENTER);
+  tint(100);
+  image(boatf, rectX, rectY);
+  rectX = rectX + moveX;
+  if (rectX > width) {
+    rectX = width;
+    moveX = -moveX;
+    boatf = boatb;
+  } 
+  if (rectX < -200) {
+    rectX = -200;
+    moveX = -moveX;
+    boatb = boatf;
+  }
+
+  //ocean
+  float x = 0;
+  while (x < width) {
+    stroke(1);
+    stroke(125);
+    line(x, 300 + 60 * noise(x / 100, time), x, height);
+    x = x + 1;
+  }
+  time = time + 0.02;
+
+
+  // Click the Start button and go to the main scene. 
+  noTint();
+  imageMode(CORNER);
+  if (isPressed == true) {
+    image(wall, 0, 0);
+    boat = false; //stop being able to click the boat.
+  }
+
+  // Press "t" to focus on tv.
+  if (key == 't') {
+    image(tv, 0, 0);
+
+    tv_on = true;
+  }
+
+
+
+  // Letters and Stars flashing on the tv screen.
+
+  rectMode(CORNER); 
+  noStroke();
+  if (tv_on == true) {
+
+    if (letter >= 0) {
+      fill(#000000);
+      rect(180, 140, 430, 330);
+      fill(#FF40B9);
+      text("c", cx, cy);
+
+      letter = letter + 0.04;
+    }
+    if (letter >= 1) {
+
+      fill(#000000);
+      rect(180, 140, 430, 330);
+      fill(#FBFF40);
+      text("2", zx, zy);
+
+
+      letter = letter + 0.04;
+    }
+    if (letter >= 2) {
+      fill(#000000);
+      rect(180, 140, 430, 330);
+      fill(255);
+      text("0", ox, oy);
+
+      letter = letter + 0.04;
+    }
+    if (letter >= 3) {
+      fill(#000000);
+
+      rect(180, 140, 430, 330);    
+      fill(#40FF8B);
+      text("s", sx, sy);
+
+      letter = letter + 0.04;
+    }
+
+    //Stars
+    fill(255);
+    ellipse(random(170, 600), random(130, 460), 6, 6);
+    fill(125);
+    ellipse(random(170, 600), random(130, 460), 6, 6);
+    fill(#AF3240);
+    ellipse(random(170, 600), random(130, 460), 6, 6);
+  }
+
+  //Press "d" to focus on the drawer.
+  if (key == 'd') {
+    image(drawer, 0, 0);
+    draw = true;
+    fill(#FF40B9);
+    rect(240, 200, 70, 70);
+    fill(#40FF8B);
+    rect(240, 310, 70, 70);
+    fill(#FBFF40);
+    rect(575, 200, 70, 70);
+    fill(255);
+    rect(575, 310, 70, 70);
+    text("What is in that TV? (Be careful with the colours.)", 30, 30);
+  } else {
+    draw = false;
+  }
+
+  //Type in the code.
+
+  if (key == 'c') {
+
+    image(drawer, 0, 0);
+    fill(#FF40B9);
+    rect(240, 200, 70, 70);
+    fill(#40FF8B);
+    rect(240, 310, 70, 70);
+    fill(#FBFF40);
+    rect(575, 200, 70, 70);
+    fill(255);
+    rect(575, 310, 70, 70);
+    text("What is in that TV? (Be careful with the colours.)", 30, 30);
+
+    show_c = true;
+  }
+  if (key == 's') {
+
+    image(drawer, 0, 0);
+    fill(#FF40B9);
+    rect(240, 200, 70, 70);
+    fill(#40FF8B);
+    rect(240, 310, 70, 70);
+    fill(#FBFF40);
+    rect(575, 200, 70, 70);
+    fill(255);
+    rect(575, 310, 70, 70);
+    text("What is in that TV? (Be careful with the colours.)", 30, 30);
+    show_s = true;
+  }
+  if (key == '2') {
+
+    image(drawer, 0, 0);
+    fill(#FF40B9);
+    rect(240, 200, 70, 70);
+    fill(#40FF8B);
+    rect(240, 310, 70, 70);
+    fill(#FBFF40);
+    rect(575, 200, 70, 70);
+    fill(255);
+    rect(575, 310, 70, 70);
+    text("What is in that TV? (Be careful with the colours.)", 30, 30);
+    show_2 = true;
+  }
+  if (key =='0') {
+
+    image(drawer, 0, 0);
+    fill(#FF40B9);
+    rect(240, 200, 70, 70);
+    fill(#40FF8B);
+    rect(240, 310, 70, 70);
+    fill(#FBFF40);
+    rect(575, 200, 70, 70);
+    fill(255);
+    rect(575, 310, 70, 70);
+    text("What is in that TV? (Be careful with the colours.)", 30, 30);
+    show_0 = true;
+  }
+
+  //If code is right, ready to go to the winning scene.
+  if (show_c == true) {
+    fill(0);
+    textSize(70);
+    text('c', 255, 255);
+    c_true = true;
+  }
+  if (show_s == true && c_true == true) {
+    fill(0);
+    textSize(70);
+    text('s', 255, 365);
+    s_true = true;
+  }
+  if (show_2 == true && c_true == true && s_true == true) {
+    fill(0);
+    textSize(60);
+    text('2', 593, 258);
+    z_true = true;
+  }
+  if (show_0 == true && c_true == true && s_true == true && z_true == true) {
+    fill(0);
+    textSize(60);
+    text('0', 593, 368);
+    fill(0);
+    rect(0, 0, width, height);
+    image(box, 200, 200);
+    box_open = true;
+  }
+
+  //Press "f" so you can go to main scene.
+  if (key == 'f') {
+    back = true;
+  } else {
+    back = false;
+  }
+  if (back == true && nowayback == false) {
+    image(wall, 0, 0);
+  }
+
+  //Press "e" to focus on Earth. Rotating scene.
+  if (key == 'e') {
+
+    if (earth_r >= 0) { 
+
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.4;
+    } 
+    if (earth_r >= 2) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.4;
+    } 
+    if (earth_r >= 3) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.4;
+    } 
+    if (earth_r >= 4) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 5) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 6) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 7) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 8) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 9) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 10) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 11) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 12) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 13) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 14) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 15) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 16) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 17) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 18) { 
+      rotate(0.5); 
+      translate(90, -250); 
+      image(earth, 0, 0); 
+      earth_r = earth_r + 0.400;
+    } 
+    if (earth_r >= 19) {
+      resetMatrix();
+      image(earth, 0, 0);
+      earth_r = 0;
+    }
+    resetMatrix();
+    rectMode(CENTER);
+    fill(random(255), random(255), random(255));
+    text("Mom told me Earth is rotating.", 100, 300);
+    fill(random(255), random(255), random(255));
+    text("Don't stare at this for too long.", 100, 350);
+    fill(random(255), random(255), random(255));
+    text("I am going to throw up!", 100, 400);
+    fill(random(255), random(255), random(255));
+    text("Nothing useful here. It is a distraction.",100,450);
+  }
+
+  // Open the box and showing texts after each period of time.
+  if (box_open == true) {
+    nowayback = true;
+    if (mousePressed) {
+      rect(0, 0, width, height);
+      image(boxopen, 210, 175);
+      image(keykey, 200, 100);
+      fill(#FC5908);
+      textSize(20);
+      text("You are clever!(Don't hold it too long!!)", 100, 50);
+      annoy = annoy + 0.01;
+      if (annoy >= 1) {
+        fill(#E520CF);
+        textSize(20);
+        text("Hey stop! You are clever but you don't listen! Don't wait.", 100, 500);
+      }
+      if (annoy >= 1.8) {
+        fill(#E5207D);
+        textSize(20);
+        rotate(0.3);
+        text("Still here?", 600, 300);
+      }
+      if (annoy >= 2.6) {
+        resetMatrix();
+        fill(#FF0335);
+        textSize(20);
+        rotate(-0.4);
+        text("Last warning!", 600, 400);
+      }
+    } else {
+      image(box, 200, 200);
+    }
+    if (annoy >= 3.4) {
+      resetMatrix();
+      fill(0);
+      rect(0, 0, width, height);
+      image(diamond, random(width), random(height));
+      textSize(50);
+      fill(random(255), random(255), random(255));
+      text("Thanks for playing (Take it and go!)", 5, 300);
+    }
+  }
+}
